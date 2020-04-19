@@ -36,7 +36,7 @@ hist(totalDailySteps$steps, breaks = 10,
      main = "Average Daily Number of Steps")
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-2-1.png)<!-- -->
+![](PA1_template_files/figure-html/unnamed-chunk-3-1.png)<!-- -->
 
 ```r
 meanSteps <- mean(totalDailySteps$steps)
@@ -57,18 +57,18 @@ ggplot(intervalSteps, aes(x=interval, y=steps)) +
     ggtitle("Average number of steps taken per 5-minute interval")
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-3-1.png)<!-- -->
+![](PA1_template_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
 
 ### Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
 
 
 ```r
-subset(activity, activity$steps == max(activity$steps, na.rm = TRUE))
+subset(intervalSteps, intervalSteps$steps == max(intervalSteps$steps, na.rm = TRUE))
 ```
 
 ```
-##       steps       date interval
-## 16492   806 2012-11-27      615
+##     interval    steps
+## 104      835 206.1698
 ```
 
 ## Imputing missing values
@@ -149,7 +149,7 @@ hist(totalDailySteps$steps, breaks = 10,
      main = "Average Daily Number of Steps")
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-9-1.png)<!-- -->
+![](PA1_template_files/figure-html/unnamed-chunk-10-1.png)<!-- -->
 
 ```r
 meanSteps <- mean(totalDailySteps$steps)
@@ -182,7 +182,7 @@ ggplot(df, aes(x=interval, y=steps)) +
     ggtitle("Average number of steps taken per 5-minute interval across weekdays and weekends")
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-10-1.png)<!-- -->
+![](PA1_template_files/figure-html/unnamed-chunk-11-1.png)<!-- -->
 
 
 It seems that the activity on weekends is more evenly distributed during the day. The bulk of activity during weekdays happends in the morning.

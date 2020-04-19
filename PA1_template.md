@@ -8,86 +8,160 @@ output:
 
 ## Loading and preprocessing the data
 
-```{r}
+
+```r
 unzip("activity.zip", exdir=".", overwrite=TRUE)
 activity <- read.csv("activity.csv")
 head(activity)
 ```
 
+```
+##   steps       date interval
+## 1    NA 2012-10-01        0
+## 2    NA 2012-10-01        5
+## 3    NA 2012-10-01       10
+## 4    NA 2012-10-01       15
+## 5    NA 2012-10-01       20
+## 6    NA 2012-10-01       25
+```
+
 
 ## What is mean total number of steps taken per day?
 
-```{r}
+
+```r
 totalDailySteps <- aggregate(steps ~ date, data = activity, sum)
 hist(totalDailySteps$steps, breaks = 10, 
      xlab="Total Number of Steps Per Day",
      main = "Average Daily Number of Steps")
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-2-1.png)<!-- -->
+
+```r
 meanSteps <- mean(totalDailySteps$steps)
 medianStep <- median(totalDailySteps$steps)
 ```
-The average of the total number of steps taken per day is `r format(meanSteps, nsmall = 1)` the median is `r medianStep`.
+The average of the total number of steps taken per day is 10766.19 the median is 10765.
 
 
 ## What is the average daily activity pattern?
 
-```{r}
+
+```r
 library(ggplot2)
 
 intervalSteps <- aggregate(steps ~ interval, data = activity, mean)
 ggplot(intervalSteps, aes(x=interval, y=steps)) +
     geom_line() +
     ggtitle("Average number of steps taken per 5-minute interval")
-
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-3-1.png)<!-- -->
 
 ### Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
 
-```{r}
+
+```r
 subset(activity, activity$steps == max(activity$steps, na.rm = TRUE))
+```
+
+```
+##       steps       date interval
+## 16492   806 2012-11-27      615
 ```
 
 ## Imputing missing values
 
 How many values are missing?
 
-```{r}
+
+```r
 sum(is.na(activity$steps))
+```
+
+```
+## [1] 2304
 ```
 
 How are the missing values distributed?
 
-```{r}
+
+```r
 missingSteps <- subset(activity, is.na(steps))
 missingDates <- unique(missingSteps$date)
 missingIntervalCount <- length(unique(missingSteps$interval))
 ```
-There are `r length(missingDates)` dates and `r missingIntervalCount` intervals missing. Lets take a look at the dates:
-```{r}
+There are 8 dates and 288 intervals missing. Lets take a look at the dates:
+
+```r
 library(kableExtra)
 kable(data.frame(date=missingDates))
 ```
 
+<table>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> date </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> 2012-10-01 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 2012-10-08 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 2012-11-01 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 2012-11-04 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 2012-11-09 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 2012-11-10 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 2012-11-14 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 2012-11-30 </td>
+  </tr>
+</tbody>
+</table>
+
 Since there are full days missing, in one case even consecutive days I decided to replace all NA values with 0.
 
-```{r}
+
+```r
 activity$steps[is.na(activity$steps)] <- 0
 ```
 
 Here is the updated histogram.
-```{r}
+
+```r
 totalDailySteps <- aggregate(steps ~ date, data = activity, sum)
 hist(totalDailySteps$steps, breaks = 10, 
      xlab="Total Number of Steps Per Day",
      main = "Average Daily Number of Steps")
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-9-1.png)<!-- -->
+
+```r
 meanSteps <- mean(totalDailySteps$steps)
 medianStep <- median(totalDailySteps$steps)
 ```
-The new average of the total number of steps taken per day is `r format(meanSteps, nsmall = 1)` the median is `r format(medianStep, nsmall = 1)`. They are lower than before because of the added zeros.
+The new average of the total number of steps taken per day is 9354.23 the median is 10395.0. They are lower than before because of the added zeros.
 
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
-```{r message=FALSE}
+
+```r
 library(chron)
 library(ggplot2)
 library(tidyr)
@@ -107,6 +181,8 @@ ggplot(df, aes(x=interval, y=steps)) +
     facet_wrap(~day, ncol = 1) +
     ggtitle("Average number of steps taken per 5-minute interval across weekdays and weekends")
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-10-1.png)<!-- -->
 
 
 It seems that the activity on weekends is more evenly distributed during the day. The bulk of activity during weekdays happends in the morning.
